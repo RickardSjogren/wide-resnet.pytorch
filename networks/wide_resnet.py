@@ -36,7 +36,7 @@ class wide_basic(nn.Module):
             )
 
     def forward(self, x):
-        out = F.dropout(x, self.dropout_rate,
+        out = F.dropout(self.conv1(F.relu(self.bn1(x))), self.dropout_rate,
                         training=self.training or self.mc_dropout)
         out = self.conv2(F.relu(self.bn2(out)))
         out += self.shortcut(x)
