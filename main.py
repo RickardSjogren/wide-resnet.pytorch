@@ -46,9 +46,9 @@ print('\n[Phase 1] : Data Preparation')
 transform_train = transforms.Compose([
     transforms.RandomCrop(32, padding=4),
     transforms.RandomHorizontalFlip(),
-    transforms.ToTensor(),
     transforms.ColorJitter(args.color_jitter, args.color_jitter, args.color_jitter, args.color_jitter),
     torchvision.transforms.RandomGrayscale(p=args.p_greyscale),
+    transforms.ToTensor(),
     transforms.Normalize(cf.mean[args.dataset], cf.std[args.dataset]),
 ]) # meanstd transformation
 
