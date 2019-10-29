@@ -21,6 +21,10 @@ from torch.autograd import Variable
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR-10 Training')
 parser.add_argument('--lr', default=0.1, type=float, help='learning_rate')
+parser.add_argument('--batch_size', default=128, type=int, help='batch size')
+parser.add_argument('--epochs', default=200, type=int, help='n epochs')
+parser.add_argument('--color_jitter', default=0, type=float, help='magnitude of color jitter')
+parser.add_argument('--p_greyscale', default=0, type=float, help='probability of greyscale augmentation')
 parser.add_argument('--net_type', default='wide-resnet', type=str, help='model')
 parser.add_argument('--depth', default=28, type=int, help='depth of model')
 parser.add_argument('--widen_factor', default=10, type=int, help='width of model')
@@ -41,6 +45,8 @@ transform_train = transforms.Compose([
     transforms.RandomCrop(32, padding=4),
     transforms.RandomHorizontalFlip(),
     transforms.ToTensor(),
+    transforms.ColorJitter(args.color_jitter, args.color_jitter, args.color_jitter, args.color_jitter),
+    torchvision.transforms.RandomGrayscale(p=args.p_greyscale),
     transforms.Normalize(cf.mean[args.dataset], cf.std[args.dataset]),
 ]) # meanstd transformation
 
@@ -62,7 +68,7 @@ elif(args.dataset == 'cifar100'):
     testset = torchvision.datasets.CIFAR100(root='./data', train=False, download=False, transform=transform_test)
     num_classes = 100
 
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=2)
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size, shuffle=True, num_workers=2)
 testloader = torch.utils.data.DataLoader(testset, batch_size=100, shuffle=False, num_workers=2)
 
 # Return network & file name
