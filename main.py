@@ -103,7 +103,7 @@ if (args.testOnly):
 
     if use_cuda:
         net.cuda()
-        net = torch.nn.DataParallel(net, device_ids=range(torch.cuda.device_count()))
+        net = torch.nn.DataParallel(net, device_ids=list(range(torch.cuda.device_count())))
         cudnn.benchmark = True
 
     net.eval()
