@@ -110,10 +110,11 @@ if (args.testOnly):
     total = 0
 
     for batch_idx, (inputs, targets) in enumerate(testloader):
-        if use_cuda:
-            inputs, targets = inputs.cuda(), targets.cuda()
-        inputs, targets = Variable(inputs, volatile=True), Variable(targets)
-        outputs = net(inputs)
+        with torch.no_grad():
+            if use_cuda:
+                inputs, targets = inputs.cuda(), targets.cuda()
+            inputs, targets = Variable(inputs), Variable(targets)
+            outputs = net(inputs)
 
         _, predicted = torch.max(outputs.data, 1)
         total += targets.size(0)
@@ -184,11 +185,12 @@ def test(epoch):
     correct = 0
     total = 0
     for batch_idx, (inputs, targets) in enumerate(testloader):
-        if use_cuda:
-            inputs, targets = inputs.cuda(), targets.cuda()
-        inputs, targets = Variable(inputs, volatile=True), Variable(targets)
-        outputs = net(inputs)
-        loss = criterion(outputs, targets)
+        with torch.no_grad():
+            if use_cuda:
+                inputs, targets = inputs.cuda(), targets.cuda()
+            inputs, targets = Variable(inputs), Variable(targets)
+            outputs = net(inputs)
+            loss = criterion(outputs, targets)
 
         test_loss += loss.item()
         _, predicted = torch.max(outputs.data, 1)
