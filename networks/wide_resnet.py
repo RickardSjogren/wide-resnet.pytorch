@@ -20,12 +20,11 @@ def conv_init(m):
         init.constant(m.bias, 0)
 
 class wide_basic(nn.Module):
-    def __init__(self, in_planes, planes, dropout_rate, stride=1, mc_dropout=False):
+    def __init__(self, in_planes, planes, dropout_rate, stride=1):
         super(wide_basic, self).__init__()
-        self.dropout_rate = dropout_rate
-        self.mc_dropout = mc_dropout
         self.bn1 = nn.BatchNorm2d(in_planes)
         self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=3, padding=1, bias=True)
+        self.dropout = nn.Dropout(p=dropout_rate)
         self.bn2 = nn.BatchNorm2d(planes)
         self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=stride, padding=1, bias=True)
 
@@ -36,8 +35,7 @@ class wide_basic(nn.Module):
             )
 
     def forward(self, x):
-        out = F.dropout(self.conv1(F.relu(self.bn1(x))), self.dropout_rate,
-                        training=self.training or self.mc_dropout)
+        out = self.dropout(self.conv1(F.relu(self.bn1(x))))
         out = self.conv2(F.relu(self.bn2(out)))
         out += self.shortcut(x)
 
