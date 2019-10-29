@@ -5,6 +5,8 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 import torch.backends.cudnn as cudnn
+import yaml
+
 import config as cf
 
 import torchvision
@@ -140,6 +142,8 @@ else:
     print('| Building net type [' + args.net_type + ']...')
     net, file_name = getNetwork(args)
     net.apply(conv_init)
+    with open('./checkpoint/run_config.yaml', mode='w') as f:
+        yaml.dump(vars(args), f)
 
 if use_cuda:
     net.cuda()
